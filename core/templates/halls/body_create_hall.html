@@ -1,0 +1,8 @@
+<div class="container">
+    <h2>Create Hall of Fame</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Create Hall</button>
+    </form>
+</div>
