@@ -1,13 +1,20 @@
+import urllib
+import requests
+
 from django.shortcuts import render, redirect
 
 from django.urls import reverse_lazy
 from django.views import generic
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
-from django.forms import formset_factory
+# from django.forms import formset_factory
+from django.http import Http404
+from django.forms.utils import ErrorList
 
 from core.forms import *
 from core.models import Hall
+
+YOUTUBE_API_KEY = "AIzaSyAI8wKj4dg3bX5unMy7px0YiKrKQmx9UZc"
 
 def home(request):
     return render(request, 'index/index.html')
@@ -22,19 +29,45 @@ def add_video(request, pk):
 
     form = VideoForm()
     search_form = SearchForm()
+    hall = Hall.objects.get(pk=pk)
+
+    # if is not the user of the original post, gets error
+    if not hall.user == request.user:
+            raise Http404
 
     if request.method == "POST":
-        filled_form = VideoForm(request.POST)
-        if filled_form.is_valid():
-            video = Video()
-            video.url = filled_form.cleaned_data['url']
-            video.title = filled_form.cleaned_data['title']
-            video.youtube_id = filled_form.cleaned_data['youtube_id']
-            
-            video.hall = Hall.objects.get(pk=pk)
-            video.save()
+        form = VideoForm(request.POST)     
 
-    return render(request, "video/add_video.html", {"form":form, "search_form":search_form})
+        # Form validation
+        if form.is_valid():
+            video = Video()
+            video.hall = hall
+
+            video.url = form.cleaned_data['url']
+            
+            parsed_url = urllib.parse.urlparse(video.url)
+            video_id = urllib.parse.parse_qs(parsed_url.query).get("v")
+
+            # Consuming the Youtube API. visit http://console.developers.google.com/
+            if video_id:
+
+                video.youtube_id = video_id[0]
+
+                response = requests.get(f"https://youtube.googleapis.com/youtube/v3/videos?part=snippet&id={video_id[0]}&key={YOUTUBE_API_KEY}")
+                json = response.json()
+                title = json['items'][0]["snippet"]["title"]
+
+                video.title = title       
+                
+                video.save()
+                return redirect("detail_hall", pk)
+
+            # Error handling
+            else:
+                errors = form._errors.setdefault("url", ErrorList())
+                errors.append("Needs to be a Youtube URL")
+
+    return render(request, "video/add_video.html", {"form":form, "search_form":search_form, "hall": hall})
 
 class SignUpView(generic.CreateView):
     form_class = UserCreationForm
