@@ -8,7 +8,7 @@ from django.views import generic
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 # from django.forms import formset_factory
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.forms.utils import ErrorList
 
 from core.forms import *
@@ -69,6 +69,15 @@ def add_video(request, pk):
 
     return render(request, "video/add_video.html", {"form":form, "search_form":search_form, "hall": hall})
 
+def video_search(request):
+    search_form = SearchForm(request.GET)
+    if search_form.is_valid():
+        encoded_search_term = urllib.parse.quote(search_form.cleaned_data["search_term"])
+        response = requests.get(f"https://youtube.googleapis.com/youtube/v3/search?part=snippet&q={encoded_search_term}&key={YOUTUBE_API_KEY}")
+        
+        return JsonResponse(response.json())
+    return JsonResponse({"Hello": "Not able to validate form"})
+
 class SignUpView(generic.CreateView):
     form_class = UserCreationForm
     success_url = reverse_lazy("home")
@@ -109,4 +118,9 @@ class UpdateHall(generic.UpdateView):
 class DeleteHall(generic.DeleteView):
     model = Hall
     template_name = "halls/delete_hall.html"
+    success_url = reverse_lazy("dashboard")
+
+class DeleteVideo(generic.DeleteView):
+    model = Video
+    template_name = "video/delete_video.html"
     success_url = reverse_lazy("dashboard")

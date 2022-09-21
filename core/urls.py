@@ -21,4 +21,6 @@ urlpatterns = [
 
     # Video
     path("halloffame/<int:pk>/addvideo", add_video, name="add_video"),
+    path("video/search", video_search, name="video_search"),
+    path("video/<int:pk>/delete", DeleteVideo.as_view(), name="delete_video"),
 ]
