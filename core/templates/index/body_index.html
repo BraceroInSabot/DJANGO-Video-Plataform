@@ -7,7 +7,7 @@
     {% if user.is_authenticated %}
         <a href="{% url 'dashboard' %}">My Hall collections</a>
     {% else %}
-        <p class="lead text-muted">Seen you are not logged in! Get logged, so you'll be able to add videos and Halls!</p>
+        <p class="lead text-muted">You are not logged in! Create or access an account, so you'll be able to add videos and Halls!</p>
         <a class="btn btn-primary" href="{% url 'login' %}">Log In</a>
         <a class="btn btn-outline-primary" href="{% url 'signup' %}">Sign up</a>
     {% endif %}
@@ -16,11 +16,16 @@
 <!-- Popular Halls -->
 
 <div class="container">
-    <h1 class="text-center">Popular Halls</h1>
+    <h1 class="text-center">Explore</h1>
 
-    {% for hall in popular_halls %}
+    {% for hall in random_halls %}
 
-    <h2><a href="{% url 'detail_hall' hall.id %}">{{ hall.title }}</a></h2>
+    <div class="row">
+        <h2><a href="{% url 'detail_hall' hall.id %}">{{ hall.title }}</a></h2>
+    </div>
+    <div class="text-muted">
+        <p> posted by {{ hall.user }}</p>
+    </div>
 
     {% if not hall.video_set.all %}
                 <p>No videos here yet!</p>
@@ -29,7 +34,6 @@
     {% if user.is_authenticated %}
         {% if user.id == hall.user.id %}
             {% if hall.video_set.all %}
-                <p>You have no videos here yet!</p>
                 <a href="{% url 'update_hall' hall.id %}" class="btn btn-warning">Edit hall</a>
                 <a href="{% url 'add_video' hall.id %}" class="btn btn-primary">Add video</a>
                 <a href="{% url 'delete_hall' hall.id %}" class="btn btn-danger">DELETE HALL</a>
@@ -43,7 +47,7 @@
 
     <div class="row">
 
-        {% for video in hall.video_set.all %}
+        {% for video in hall.video_set.all|slice:":3" %}
 
         <div class="col-md-4 mt-3">
             <div class="card mb-4 shadow-sm">
@@ -60,7 +64,21 @@
         {% endfor %}
     </div>
     {% endfor %}
+
+    <div class="text-center">
+        <br>
+        <br>
+        <a href="{% url 'explore' %}">
+            <button class="btn btn-primary">
+                MORE RANDOM HALLS
+            </button>
+        </a>
+        <br>
+        <br>
+    </div>
 </div>
+
+<hr>
 
 <!-- Most Recent Halls -->
 
@@ -70,7 +88,10 @@
     {% for hall in most_recent %}
 
     <h2><a href="{% url 'detail_hall' hall.id %}">{{ hall.title }}</a></h2>
-
+    <div class="text-muted">
+        <p> posted by {{ hall.user }}</p>
+    </div>
+    
     {% if not hall.video_set.all %}
                 <p>No videos here yet!</p>
     {% endif %}
@@ -78,7 +99,6 @@
     {% if user.is_authenticated %}
         {% if user.id == hall.user.id %}
             {% if hall.video_set.all %}
-                <p>You have no videos here yet!</p>
                 <a href="{% url 'update_hall' hall.id %}" class="btn btn-warning">Edit hall</a>
                 <a href="{% url 'add_video' hall.id %}" class="btn btn-primary">Add video</a>
                 <a href="{% url 'delete_hall' hall.id %}" class="btn btn-danger">DELETE HALL</a>
@@ -92,7 +112,7 @@
 
     <div class="row">
 
-        {% for video in hall.video_set.all %}
+        {% for video in hall.video_set.all|slice:":6" %}
 
         <div class="col-md-4 mt-3">
             <div class="card mb-4 shadow-sm">
@@ -109,7 +129,16 @@
         {% endfor %}
     </div>
     {% endfor %}
+
+    <div class="text-center">
+        <br>
+        <br>
+        <a href="{% url 'most_recent' %}">
+            <button class="btn btn-primary">
+                MORE FRESH HALLS
+            </button>
+        </a>
+        <br>
+        <br>
+    </div>
 </div>
-
-
-

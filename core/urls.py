@@ -6,6 +6,8 @@ from .views import *
 
 urlpatterns = [
     path("", home, name="home"),
+    path("explore", explore, name="explore"),
+    path("most-recent", recent, name="most_recent"),
 
     # Authentication
     path("signup", SignUpView.as_view(), name="signup"),

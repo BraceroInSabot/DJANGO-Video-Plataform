@@ -20,9 +20,22 @@ YOUTUBE_API_KEY = "AIzaSyAI8wKj4dg3bX5unMy7px0YiKrKQmx9UZc"
 
 
 def home(request):
-    popular_halls = [Hall.objects.get(pk=2), Hall.objects.get(pk=3), Hall.objects.get(pk=4)]
+    explore = Hall.objects.order_by("?")[:5]
     most_recent = Hall.objects.all().order_by('-id')[:5]
-    return render(request, 'index/index.html', {"popular_halls":popular_halls, "most_recent":most_recent})
+    return render(request, 'index/index.html', {"random_halls":explore, "most_recent":most_recent})
+
+
+def explore(request):
+    explore = Hall.objects.order_by("?").all()
+
+    return render(request, "index/explore.html", {"explore":explore})
+
+
+def recent(request):
+    most_recent = Hall.objects.all().order_by('-id')
+
+    return render(request, "index/recent.html", {"recent":most_recent})
+
 
 @login_required
 def dashboard(request):

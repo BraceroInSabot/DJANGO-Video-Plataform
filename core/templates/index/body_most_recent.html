@@ -1,0 +1,49 @@
+
+<div class="container">
+    <h1 class="text-center">Most Recent Halls</h1>
+
+    {% for hall in recent %}
+
+    <h2><a href="{% url 'detail_hall' hall.id %}">{{ hall.title }}</a></h2>
+    <div class="text-muted">
+        <p> posted by {{ hall.user }}</p>
+    </div>
+    
+    {% if not hall.video_set.all %}
+                <p>No videos here yet!</p>
+    {% endif %}
+
+    {% if user.is_authenticated %}
+        {% if user.id == hall.user.id %}
+            {% if hall.video_set.all %}
+                <a href="{% url 'update_hall' hall.id %}" class="btn btn-warning">Edit hall</a>
+                <a href="{% url 'add_video' hall.id %}" class="btn btn-primary">Add video</a>
+                <a href="{% url 'delete_hall' hall.id %}" class="btn btn-danger">DELETE HALL</a>
+            {% endif %}
+        {% endif %}
+    {% else %}
+        {% if not hall.video_set.all %}
+            <p>You have no videos here yet!</p>
+        {% endif %}
+    {% endif %}
+
+    <div class="row">
+
+        {% for video in hall.video_set.all|slice:":6" %}
+
+        <div class="col-md-4 mt-3">
+            <div class="card mb-4 shadow-sm">
+                <iframe width="100%" height="300" src="https://www.youtube.com/embed/{{ video.youtube_id }}"
+                    frameborder="0"
+                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                    allowfullscreen></iframe>
+                <div class="card-body">
+                    <p class="card-text">{{ video.title }}</p>
+                </div>
+            </div>
+        </div>
+
+        {% endfor %}
+    </div>
+    {% endfor %}
+</div>
