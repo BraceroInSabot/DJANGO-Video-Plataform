@@ -1,3 +1,46 @@
 <div class="container">
-    DASHBOARD
+    <div class="text-center">
+        <h1>{{ user.username }}'s Hall of Fames</h1>
+        <a href="{% url 'create_hall' %}" class="btn btn-primary">Create a new Hall of Fame</a>
+    </div>
+
+    {% for hall in halls %}
+
+        {% if user.id == hall.user.id %}
+            {% if not hall.video_set.all %}
+                <h2><a href="{% url 'detail_hall' hall.id %}">{{ hall.title }}</a></h2>
+                <p>You have no videos here yet!</p>
+                <a href="{% url 'update_hall' hall.id %}" class="btn btn-warning">Edit hall</a>
+                <a href="{% url 'add_video' hall.id %}" class="btn btn-primary">Add your first video!</a>
+                <a href="{% url 'delete_hall' hall.id %}" class="btn btn-danger">DELETE HALL</a>
+                <br>
+                <br>
+                {% else %}
+                <h2><a href="{% url 'detail_hall' hall.id %}">{{ hall.title }}</a></h2>
+                <a href="{% url 'update_hall' hall.id %}" class="btn btn-warning">Edit hall</a>
+                <a href="{% url 'add_video' hall.id %}" class="btn btn-primary">Add video</a>
+                <a href="{% url 'delete_hall' hall.id %}" class="btn btn-danger">DELETE HALL</a>
+            {% endif %}
+        {% endif %}
+
+    <div class="row">
+
+        {% for video in hall.video_set.all %}
+
+            <div class="col-md-4 mt-3">
+                <div class="card mb-4 shadow-sm">
+                    <iframe width="100%" height="300" src="https://www.youtube.com/embed/{{ video.youtube_id }}"
+                        frameborder="0"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                        allowfullscreen></iframe>
+                    <div class="card-body">
+                        <p class="card-text">{{ video.title }}</p>
+                    </div>
+                </div>
+            </div>
+
+        {% endfor %}
+    </div>
+
+    {% endfor %}
 </div>

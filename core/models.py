@@ -5,6 +5,7 @@ class Hall(models.Model):
     title = models.CharField(max_length=255)
     user = models.ForeignKey(User, on_delete=models.CASCADE)
 
+
 class Video(models.Model):
     title = models.CharField(max_length=255)
     url = models.URLField()
