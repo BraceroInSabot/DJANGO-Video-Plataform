@@ -1,6 +1,8 @@
 import urllib
 import requests
 
+from decouple import config
+
 from django.shortcuts import render, redirect
 
 from django.urls import reverse_lazy
@@ -16,7 +18,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from core.forms import *
 from core.models import Hall
 
-YOUTUBE_API_KEY = "AIzaSyAI8wKj4dg3bX5unMy7px0YiKrKQmx9UZc"
+YOUTUBE_API_KEY = config("YOUTUBE_API_KEY", cast=str)
 
 
 def home(request):

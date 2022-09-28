@@ -1,6 +1,6 @@
 <section class="jumbotron text-center">
     <div class="container">
-        <h1 class="jumbotron-heading"> What's your personal Hall of Fame </h1>
+        <h1 class="jumbotron-heading"> Share your favorite videos on a <br><span style="font-size: 80px">Hall of Fame</span> </h1>
     </div>
     <p class="lead text-muted">It's time to share your favorite videos to the world!</p>
 
@@ -87,7 +87,9 @@
 
     {% for hall in most_recent %}
 
-    <h2><a href="{% url 'detail_hall' hall.id %}">{{ hall.title }}</a></h2>
+    <div class="row">
+        <h2><a href="{% url 'detail_hall' hall.id %}">{{ hall.title }}</a></h2>
+    </div>
     <div class="text-muted">
         <p> posted by {{ hall.user }}</p>
     </div>
