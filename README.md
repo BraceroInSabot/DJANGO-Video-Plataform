@@ -39,9 +39,15 @@ This is a video plataform where the user can add his favorite videos and share w
 
 
 ## Meta 
-
-Guilherme Bracero Gonzales 
 <br>
-Instagram - [Bracer](https://instagram.com/guilhermebracero)
+
+<h2> Guilherme Bracero Gonzales </h2>
+
+<br>
+LinkedIN - [Guilherme Bracero](https://www.linkedin.com/in/guilherme-bracero/)
+<br>
+Instagram - [Bracero](https://instagram.com/guilhermebracero)
 <br>
 Email - [guibragon@gmail.com](www.gmail.com) 
+
+
