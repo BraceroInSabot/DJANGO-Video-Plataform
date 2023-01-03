@@ -1,7 +1,9 @@
 # Authencation libs
 from django.contrib.auth import views as auth_views
 
+from django.conf.urls import handler500
 from django.urls import path
+from core import views
 from .views import *
 
 urlpatterns = [
@@ -26,3 +28,5 @@ urlpatterns = [
     path("video/search", video_search, name="video_search"),
     path("video/<int:pk>/delete", DeleteVideo.as_view(), name="delete_video"),
 ]
+
+handler500 = "core.views.error_500"

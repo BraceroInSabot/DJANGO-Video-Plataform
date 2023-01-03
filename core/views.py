@@ -18,8 +18,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from core.forms import *
 from core.models import Hall
 
-YOUTUBE_API_KEY = config("YOUTUBE_API_KEY", cast=str)
-
+YOUTUBE_API_KEY = config("YT_API_KEY", cast=str)
 
 def home(request):
     explore = Hall.objects.order_by("?")[:5]
@@ -71,23 +70,25 @@ def add_video(request, pk):
             video_id = urllib.parse.parse_qs(parsed_url.query).get("v")
 
             # Consuming the Youtube API. visit http://console.developers.google.com/
+            
             if video_id:
 
                 video.youtube_id = video_id[0]
-
                 response = requests.get(f"https://youtube.googleapis.com/youtube/v3/videos?part=snippet&id={video_id[0]}&key={YOUTUBE_API_KEY}")
-                json = response.json()
-                title = json['items'][0]["snippet"]["title"]
+                video_data = response.json()
+                # print(f"\n\n\n\n\n\n\n\n\n\n{video_data}\n\n\n\n\n\n\n\n\n\n")
+                title = video_data['items'][0]["snippet"]["title"]
 
                 video.title = title       
                 
                 video.save()
                 return redirect("detail_hall", pk)
 
-            # Error handling
+                # Error handling
             else:
                 errors = form._errors.setdefault("url", ErrorList())
                 errors.append("Needs to be a Youtube URL")
+
 
     return render(request, "video/add_video.html", {"form":form, "search_form":search_form, "hall": hall})
 
@@ -169,3 +170,8 @@ class DeleteVideo(LoginRequiredMixin, generic.DeleteView):
         if not video.hall.user == self.request.user:
             raise Http404
         return video
+
+
+def error_500(request):
+    data = {}
+    return render(request, "error/500.html", data)
