@@ -9,7 +9,14 @@ createsuperuser:
 runserver:
 	python3 manage.py runserver
 
+
 # DOCKER
+
+migrate-docker:
+	python3 manage.py makemigrations --no-input
+	python3 manage.py migrate --no-input
+	python3 manage.py collectstatic --no-input
+	python3 manage.py runserver 0.0.0.0:8000
 
 build:
 	docker-compose -f local.yml up --build -d --remove-orphans --force-recreate
